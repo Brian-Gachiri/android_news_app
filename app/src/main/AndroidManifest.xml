@@ -3,6 +3,7 @@
     package="com.brige.newsapp">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,11 +14,11 @@
             android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
-            android:theme="@style/NoActionBar"/>
+            android:theme="@style/Theme.NewsApp.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/Theme.NewsApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

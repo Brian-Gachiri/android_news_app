@@ -1,6 +1,8 @@
 package com.brige.newsapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +53,14 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
             super(itemView);
 
             imgDiscover = itemView.findViewById(R.id.img_discover);
+
+            itemView.setOnClickListener(v ->{
+
+                String url = discoverList.get(getAdapterPosition()).getVideo_url();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            });
 
         }
     }

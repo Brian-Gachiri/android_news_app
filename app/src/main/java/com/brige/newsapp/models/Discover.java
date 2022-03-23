@@ -28,4 +28,36 @@ public class Discover {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getVideo_url() {
+        return video_url;
+    }
+
+    public void setVideo_url(String video_url) {
+        this.video_url = video_url;
+    }
+
+    public boolean isIs_external_image() {
+        return is_external_image;
+    }
+
+    public void setIs_external_image(boolean is_external_image) {
+        this.is_external_image = is_external_image;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
 }

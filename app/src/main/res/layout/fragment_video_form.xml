@@ -23,6 +23,7 @@
             android:id="@+id/img_add_discover"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/upload" />
     </androidx.cardview.widget.CardView>
 
@@ -60,6 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_video_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="https://www.youtube.com/yourvideo" />

@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.R;
 import com.brige.newsapp.models.Discover;
+import com.brige.newsapp.utils.CustomDialog;
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -48,18 +50,31 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgDiscover;
+        FloatingActionButton playVideo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgDiscover = itemView.findViewById(R.id.img_discover);
+            playVideo = itemView.findViewById(R.id.btn_discover_play);
 
-            itemView.setOnClickListener(v ->{
+            playVideo.setOnClickListener(v ->{
 
                 String url = discoverList.get(getAdapterPosition()).getVideo_url();
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 context.startActivity(i);
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    Discover discover = discoverList.get(getAdapterPosition());
+                    new CustomDialog(context).showDiscoverDialog(discover);
+
+                    return true;
+                }
             });
 
         }

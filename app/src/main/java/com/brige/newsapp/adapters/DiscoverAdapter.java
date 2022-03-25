@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.R;
 import com.brige.newsapp.models.Discover;
+import com.brige.newsapp.ui.home.HomeFragment;
 import com.brige.newsapp.utils.CustomDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,6 +23,13 @@ import java.util.List;
 public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHolder> {
     List<Discover> discoverList;
     Context context;
+    HomeFragment homeFragment;
+
+    public DiscoverAdapter(List<Discover> discoverList, Context context, HomeFragment homeFragment) {
+        this.discoverList = discoverList;
+        this.context = context;
+        this.homeFragment = homeFragment;
+    }
 
     public DiscoverAdapter(List<Discover> discoverList, Context context) {
         this.discoverList = discoverList;
@@ -48,6 +56,13 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
         return discoverList.size();
     }
 
+    public void deleteDiscover(List<Discover> list) {
+        discoverList.clear();
+        discoverList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgDiscover;
         FloatingActionButton playVideo;
@@ -71,7 +86,7 @@ public class DiscoverAdapter extends RecyclerView.Adapter<DiscoverAdapter.ViewHo
                 public boolean onLongClick(View view) {
 
                     Discover discover = discoverList.get(getAdapterPosition());
-                    new CustomDialog(context).showDiscoverDialog(discover);
+                    new CustomDialog(context, view).showDiscoverDialog(discover, DiscoverAdapter.this);
 
                     return true;
                 }

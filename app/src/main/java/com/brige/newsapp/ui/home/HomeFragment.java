@@ -9,10 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.ObjectBox;
+import com.brige.newsapp.R;
 import com.brige.newsapp.adapters.DiscoverAdapter;
 import com.brige.newsapp.databinding.FragmentHomeBinding;
 import com.brige.newsapp.models.Discover;
@@ -48,7 +50,7 @@ public class HomeFragment extends Fragment {
 
         discoverList.clear();
         discoverList.addAll(discoverBox.getAll());
-        discoverAdapter = new DiscoverAdapter(discoverList, getActivity());
+        discoverAdapter = new DiscoverAdapter(discoverList, getActivity(), this);
         binding.recyclerDiscover.setAdapter(discoverAdapter);
 
 
@@ -59,5 +61,12 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void deleteDiscover(long id) {
+        discoverBox.remove(id);
+        discoverList.clear();
+        discoverList.addAll(discoverBox.getAll());
+        discoverAdapter.notifyDataSetChanged();
     }
 }

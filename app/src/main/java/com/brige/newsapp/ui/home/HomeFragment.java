@@ -1,10 +1,14 @@
 package com.brige.newsapp.ui.home;
 
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
+import android.provider.Browser;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,21 +19,32 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.ObjectBox;
 import com.brige.newsapp.R;
+import com.brige.newsapp.adapters.BrowseAdapter;
 import com.brige.newsapp.adapters.DiscoverAdapter;
 import com.brige.newsapp.databinding.FragmentHomeBinding;
 import com.brige.newsapp.models.Discover;
+import com.brige.newsapp.networking.ServiceGenerator;
+import com.brige.newsapp.networking.URLs;
+import com.brige.newsapp.networking.pojos.Article;
+import com.brige.newsapp.networking.pojos.Browse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private DiscoverAdapter discoverAdapter;
+    private BrowseAdapter browseAdapter;
     private RecyclerView discoverRecyclerview, browseRecyclerView;
     private List<Discover> discoverList = new ArrayList<>();
+    private List<Browse> browserList = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
     private Box<Discover> discoverBox = ObjectBox.get().boxFor(Discover.class);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -43,16 +58,16 @@ public class HomeFragment extends Fragment {
         binding.recyclerDiscover.setLayoutManager(
                 new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         );
-
-//        discoverList.add(new Discover("https://images.unsplash.com/photo-1647496849037-3390ed7805a7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0N3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
-//        discoverList.add(new Discover("https://images.unsplash.com/photo-1647468951241-be39bebc92aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0OHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
-//        discoverList.add(new Discover("https://images.unsplash.com/photo-1586227740560-8cf2732c1531?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw1MHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"));
+        binding.recyclerBrowse.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         discoverList.clear();
         discoverList.addAll(discoverBox.getAll());
         discoverAdapter = new DiscoverAdapter(discoverList, getActivity(), this);
         binding.recyclerDiscover.setAdapter(discoverAdapter);
+        browseAdapter = new BrowseAdapter(articles, requireActivity());
+        binding.recyclerBrowse.setAdapter(browseAdapter);
 
+        getBrowseData();
 
         return root;
     }
@@ -63,10 +78,47 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    public void deleteDiscover(long id) {
-        discoverBox.remove(id);
-        discoverList.clear();
-        discoverList.addAll(discoverBox.getAll());
-        discoverAdapter.notifyDataSetChanged();
+
+    public void getBrowseData(){
+
+        Call<Browse> call = ServiceGenerator.getInstance()
+                .getApiConnector()
+                .getNews("Technology", "2022-03-28", "popularity", URLs.API_KEY);
+
+        call.enqueue(new Callback<Browse>() {
+            @Override
+            public void onResponse(Call<Browse> call, Response<Browse> response) {
+
+                if (response.code() == 200 && response.body() != null){
+
+                    articles.clear();
+                    articles.addAll(response.body().getArticles());
+                    browseAdapter.notifyDataSetChanged();
+                }
+                else{
+                    Log.d("TEST::", "onResponse: "+ response.message());
+                    try {
+                        Toast.makeText(requireActivity(), "Something went wrong.", Toast.LENGTH_SHORT).show();
+                    }
+                    catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Browse> call, Throwable t) {
+
+                Log.d("TEST::", "onFailure: "+t.getMessage());
+                try {
+                    Toast.makeText(requireActivity(), "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                }
+                catch (ActivityNotFoundException e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
+
+
 }

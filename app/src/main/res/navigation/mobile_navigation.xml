@@ -28,4 +28,14 @@
         android:name="com.brige.newsapp.VideoFormFragment"
         android:label="Add a Video"
         tools:layout="@layout/fragment_video_form" />
+    <fragment
+        android:id="@+id/newsDetailsFragment"
+        android:name="com.brige.newsapp.NewsDetailsFragment"
+        android:label="fragment_news_details"
+        tools:layout="@layout/fragment_news_details" />
+    <fragment
+        android:id="@+id/browseFragment"
+        android:name="com.brige.newsapp.BrowseFragment"
+        android:label="Browse"
+        tools:layout="@layout/fragment_browse" />
 </navigation>

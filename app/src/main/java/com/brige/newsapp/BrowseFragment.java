@@ -1,32 +1,34 @@
-package com.brige.newsapp.ui.home;
+package com.brige.newsapp;
 
 import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Browser;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.brige.newsapp.ObjectBox;
-import com.brige.newsapp.R;
 import com.brige.newsapp.adapters.BrowseAdapter;
 import com.brige.newsapp.adapters.DiscoverAdapter;
+import com.brige.newsapp.databinding.FragmentBrowseBinding;
 import com.brige.newsapp.databinding.FragmentHomeBinding;
 import com.brige.newsapp.models.Discover;
 import com.brige.newsapp.networking.ServiceGenerator;
 import com.brige.newsapp.networking.URLs;
 import com.brige.newsapp.networking.pojos.Article;
 import com.brige.newsapp.networking.pojos.Browse;
+import com.brige.newsapp.repositories.NewsRepo;
+import com.brige.newsapp.ui.home.HomeFragment;
+import com.brige.newsapp.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,66 +38,71 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
-    private DiscoverAdapter discoverAdapter;
+public class BrowseFragment extends Fragment {
+
+    FragmentBrowseBinding binding;
     private BrowseAdapter browseAdapter;
-    private RecyclerView discoverRecyclerview, browseRecyclerView;
-    private List<Discover> discoverList = new ArrayList<>();
-    private List<Browse> browserList = new ArrayList<>();
     private List<Article> articles = new ArrayList<>();
-    private Box<Discover> discoverBox = ObjectBox.get().boxFor(Discover.class);
+    private HomeViewModel homeViewModel;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+    public BrowseFragment() {
+        // Required empty public constructor
+    }
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        homeViewModel.displayNews();
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentBrowseBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.recyclerDiscover.setLayoutManager(
-                new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-        );
-        binding.recyclerBrowse.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        binding.browseRecyclerview.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        binding.browseRecyclerview.setNestedScrollingEnabled(true);
 
-        discoverList.clear();
-        discoverList.addAll(discoverBox.getAll());
-        discoverAdapter = new DiscoverAdapter(discoverList, getActivity(), this);
-        binding.recyclerDiscover.setAdapter(discoverAdapter);
         browseAdapter = new BrowseAdapter(articles, requireActivity());
-        binding.recyclerBrowse.setAdapter(browseAdapter);
+        binding.browseRecyclerview.setAdapter(browseAdapter);
 
-        binding.btnLoadMore.setOnClickListener(v -> {
-
-            Navigation.findNavController(root).navigate(R.id.browseFragment);
-        });
-
-        getBrowseData();
+//        getBrowseData();
 
         return root;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+    public void onResume() {
+        super.onResume();
 
+        homeViewModel.displayNews().observe(requireActivity(), news -> {
+            articles.clear();
+            articles.addAll(news);
+            browseAdapter.notifyDataSetChanged();
+        });
+
+    }
 
     public void getBrowseData(){
 
         Call<Browse> call = ServiceGenerator.getInstance()
                 .getApiConnector()
-                .getNews("Technology", "2022-03-28", "popularity", URLs.API_KEY, 5);
+                .getNews("Technology", "2022-03-28", "popularity", URLs.API_KEY, 100);
 
         call.enqueue(new Callback<Browse>() {
             @Override
             public void onResponse(Call<Browse> call, Response<Browse> response) {
 
                 if (response.code() == 200 && response.body() != null){
-
+                    Log.d("TEST::", "onResponse: "+response.code());
                     articles.clear();
                     articles.addAll(response.body().getArticles());
                     browseAdapter.notifyDataSetChanged();

@@ -9,10 +9,12 @@
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/fragment_news_details.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/fragment_news_details.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_video_form.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_discover.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/item_news.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/item_message.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/item_news.xml" value="0.2759493670886076" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.12407407407407407" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.1984375" />
       </map>

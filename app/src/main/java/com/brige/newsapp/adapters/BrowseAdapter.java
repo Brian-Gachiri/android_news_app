@@ -1,6 +1,7 @@
 package com.brige.newsapp.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.R;
@@ -15,6 +17,9 @@ import com.brige.newsapp.networking.pojos.Article;
 import com.brige.newsapp.networking.pojos.Browse;
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder> {
@@ -58,6 +63,23 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.ViewHolder
             imgBrowse = itemView.findViewById(R.id.img_browse);
             txtSub = itemView.findViewById(R.id.txt_browse_author);
             txtTitle = itemView.findViewById(R.id.txt_browse_title);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("IMAGE",browseList.get(getAdapterPosition()).getUrlToImage());
+                    bundle.putString("TITLE", browseList.get(getAdapterPosition()).getTitle());
+                    bundle.putString("CONTENT", browseList.get(getAdapterPosition()).getContent());
+                    bundle.putString("URL", browseList.get(getAdapterPosition()).getUrl());
+                    bundle.putString("AUTHOR", browseList.get(getAdapterPosition()).getAuthor());
+
+
+                    Navigation.findNavController(view).navigate(R.id.newsDetailsFragment, bundle);
+                }
+            });
         }
     }
+
+
 }

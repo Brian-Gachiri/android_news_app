@@ -65,8 +65,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-//        onBackPressed();
-//        return super.onSupportNavigateUp();
 
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();

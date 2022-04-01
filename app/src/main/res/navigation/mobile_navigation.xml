@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.brige.newsapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_messages"
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/newsDetailsFragment"
         android:name="com.brige.newsapp.NewsDetailsFragment"
-        android:label="fragment_news_details"
+        android:label="News"
         tools:layout="@layout/fragment_news_details" />
     <fragment
         android:id="@+id/browseFragment"

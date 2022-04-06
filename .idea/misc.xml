@@ -5,12 +5,14 @@
       <map>
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/bottom_sheet_login_dialog.xml" value="0.1925925925925926" />
+        <entry key="app/src/main/res/layout/bottom_sheet_register_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/layout/discover_options.xml" value="0.300561797752809" />
         <entry key="app/src/main/res/layout/fragment_browse.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_news_details.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_video_form.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_discover.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_message.xml" value="0.5" />

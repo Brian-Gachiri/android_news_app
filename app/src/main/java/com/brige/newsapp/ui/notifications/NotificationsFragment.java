@@ -85,9 +85,11 @@ public class NotificationsFragment extends Fragment {
 
 
          btnLogin.setOnClickListener(v ->{
-            new PreferenceStorage(context).setAuthStatus(true);
-            bottomSheetDialog.dismiss();
-            showOrHideLayouts();
+
+             loginUser(
+                     inputUsername.getText().toString().trim(),
+                     inputPass.getText().toString().trim()
+             );
         });
          switchRegister.setOnClickListener(v ->{
              bottomSheetDialog.dismiss();
@@ -170,6 +172,49 @@ public class NotificationsFragment extends Fragment {
                     SweetAlertDialog successDialog = new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE);
                     successDialog.setTitle("Welcome "+ response.body().getUsername());
                     successDialog.setContentText("Registration Successful");
+                    successDialog.show();
+                }
+                else if (response.code() == 500){
+                    SweetAlertDialog errorDialog =
+                            new SweetAlertDialog(context,SweetAlertDialog.ERROR_TYPE);
+                    errorDialog.setTitle("Oops ");
+                    errorDialog.setContentText(response.message());
+                    errorDialog.show();
+                }
+                else{
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+                Log.d("TEST::", "onResponse: "+response.message());
+            }
+
+            @Override
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                pDialog.dismiss();
+                Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                Log.d("TEST::", "onFailure: "+t.getMessage());
+            }
+        });
+    }
+
+    public void loginUser(String username, String password){
+        pDialog.setContentText("Logging in  User");
+        pDialog.show();
+
+        Call<UserResponse> call = ChatServiceGenerator.getInstance()
+                .getApiConnector().login(username, password);
+
+        call.enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                pDialog.dismiss();
+                if (response.code()== 200 && response.body()!= null){
+
+                    new PreferenceStorage(context).setAuthStatus(true);
+                    new PreferenceStorage(context).setUserData(response.body());
+
+                    SweetAlertDialog successDialog = new SweetAlertDialog(context,SweetAlertDialog.SUCCESS_TYPE);
+                    successDialog.setTitle("Welcome "+ response.body().getUsername());
+                    successDialog.setContentText("login Successful");
                     successDialog.show();
                 }
                 else if (response.code() == 500){

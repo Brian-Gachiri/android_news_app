@@ -1,13 +1,40 @@
 package com.brige.newsapp.networking.pojos;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class UserResponse {
 
-    String username;
-    String token;
-    String phoneNumber;
-    String email;
+    @SerializedName("token")
+    @Expose
+    private String token;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("username")
+    @Expose
+    private String username;
+    @SerializedName("email")
+    @Expose
+    private String email;
+    @SerializedName("phone_number")
+    @Expose
+    private String phoneNumber;
 
-    public UserResponse() {
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -18,12 +45,12 @@ public class UserResponse {
         this.username = username;
     }
 
-    public String getToken() {
-        return token;
+    public String getEmail() {
+        return email;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhoneNumber() {
@@ -34,11 +61,4 @@ public class UserResponse {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

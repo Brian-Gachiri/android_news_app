@@ -1,13 +1,11 @@
 package com.brige.newsapp.ui.notifications;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +75,10 @@ public class NotificationsFragment extends Fragment {
             bottomSheetDialog.dismiss();
             showOrHideLayouts();
         });
+         switchRegister.setOnClickListener(v ->{
+             bottomSheetDialog.dismiss();
+             showRegisterDialog();
+         });
 
         bottomSheetDialog.show();
     }
@@ -85,6 +87,24 @@ public class NotificationsFragment extends Fragment {
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_register_dialog);
+
+        TextInputEditText inputRegisterUsername, inputEmail, inputNumber, inputPassword, inputConfirmPassword;
+        inputEmail = bottomSheetDialog.findViewById(R.id.input_email);
+        inputConfirmPassword = bottomSheetDialog.findViewById(R.id.input_confirm_password);
+        inputRegisterUsername = bottomSheetDialog.findViewById(R.id.input_register_username);
+        inputNumber = bottomSheetDialog.findViewById(R.id.input_number);
+        inputPassword = bottomSheetDialog.findViewById(R.id.input_register_password);
+
+        Button btnRegister = bottomSheetDialog.findViewById(R.id.btn_dialog_register);
+        Button switchLogin = bottomSheetDialog.findViewById(R.id.btn_dialog_switch_login);
+
+        switchLogin.setOnClickListener(v ->{
+            bottomSheetDialog.dismiss();
+            showLoginDialog();
+        });
+
+
+        bottomSheetDialog.show();
     }
 
     private void showOrHideLayouts() {

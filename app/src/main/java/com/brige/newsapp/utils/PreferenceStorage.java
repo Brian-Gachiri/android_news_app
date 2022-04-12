@@ -49,4 +49,9 @@ public class PreferenceStorage {
     }
 
 
+    public void logout() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(IS_AUTHENTICATED, false);
+        editor.apply();
+    }
 }

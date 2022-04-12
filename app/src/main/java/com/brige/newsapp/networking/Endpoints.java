@@ -1,6 +1,7 @@
 package com.brige.newsapp.networking;
 
 import com.brige.newsapp.networking.pojos.Browse;
+import com.brige.newsapp.networking.pojos.ChatResponse;
 import com.brige.newsapp.networking.pojos.RegisterRequest;
 import com.brige.newsapp.networking.pojos.UserResponse;
 
@@ -32,5 +33,8 @@ public interface Endpoints {
     @FormUrlEncoded
     @POST("api/login")
     Call<UserResponse> login(@Field("username") String username, @Field("password") String password);
+
+    @GET("api/chats")
+    Call<ChatResponse> getChats();
 
 }

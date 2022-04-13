@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.brige.newsapp.utils.PreferenceStorage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -17,6 +18,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.brige.newsapp.databinding.ActivityHomeBinding;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -61,11 +64,30 @@ public class HomeActivity extends AppCompatActivity {
             navController.navigate(R.id.videoFormFragment);
         }
         else if (id == R.id.item_logout){
-            //TODO: Add an alert dialog that asks the user whether
-            //they are sure they want to logout
-            new PreferenceStorage(this).logout();
-            navController.popBackStack(R.id.navigation_home, true);
-            navController.navigate(R.id.navigation_home);
+            SweetAlertDialog confirm = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+            confirm.setTitle("Logout");
+            confirm.setContentText("Are you sure you want to leave?");
+            confirm.setConfirmText("Yes");
+            confirm.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    new PreferenceStorage(HomeActivity.this).logout();
+                    sweetAlertDialog.dismiss();
+                    navController.popBackStack(R.id.navigation_home, true);
+                    navController.navigate(R.id.navigation_home);
+                }
+            });
+            confirm.setCancelText("Stay");
+            confirm.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+                    Toast.makeText(HomeActivity.this, "Thank you for staying", Toast.LENGTH_SHORT).show();
+                }
+            });
+            confirm.show();
+
+
         }
 
         return super.onOptionsItemSelected(item);

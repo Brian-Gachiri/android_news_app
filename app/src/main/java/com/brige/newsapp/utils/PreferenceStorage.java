@@ -46,6 +46,7 @@ public class PreferenceStorage {
     public void setAuthStatus(Boolean status){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(IS_AUTHENTICATED, status);
+        editor.apply();
     }
 
 

@@ -267,14 +267,20 @@ public class NotificationsFragment extends Fragment {
         pDialog.setContentText("Fetching Chats");
         pDialog.show();
 
-        Call<ChatResponse> call = ChatServiceGenerator.getInstance()
-                .getApiConnector().getChats();
+        Toast.makeText(context, new PreferenceStorage(context).getUserToken(), Toast.LENGTH_SHORT).show();
 
-        call.enqueue(new Callback<ChatResponse>() {
+        Call<List<ChatResponse>> call = ChatServiceGenerator.getInstance()
+                .getApiConnector().getChats(new PreferenceStorage(context).getUserToken());
+
+        call.enqueue(new Callback<List<ChatResponse>>() {
             @Override
-            public void onResponse(Call<ChatResponse> call, Response<ChatResponse> response) {
-
+            public void onResponse(Call<List<ChatResponse>> call, Response<List<ChatResponse>> response) {
+                pDialog.dismiss();
                 if (response.code() == 200){
+
+                    chats.clear();
+                    chats.addAll(response.body());
+                    chatAdapter.notifyDataSetChanged();
 
                 }
                 else{
@@ -284,7 +290,7 @@ public class NotificationsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ChatResponse> call, Throwable t) {
+            public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
                 pDialog.dismiss();
                 Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 Log.d("TEST::", "onFailure: "+t.getMessage());

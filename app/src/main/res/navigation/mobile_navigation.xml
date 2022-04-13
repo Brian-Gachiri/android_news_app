@@ -38,4 +38,9 @@
         android:name="com.brige.newsapp.BrowseFragment"
         android:label="Browse"
         tools:layout="@layout/fragment_browse" />
+    <fragment
+        android:id="@+id/chatDetailsFragment"
+        android:name="com.brige.newsapp.ChatDetailsFragment"
+        android:label="fragment_chat_details"
+        tools:layout="@layout/fragment_chat_details" />
 </navigation>

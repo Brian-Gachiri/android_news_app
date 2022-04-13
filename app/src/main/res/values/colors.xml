@@ -9,6 +9,7 @@
     <color name="black_translucent">#74000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#5474F1</color>
+    <color name="blue_chat">#5E5474F1</color>
     <color name="red">#FF6962</color>
     <color name="light_gray">#EDEDED</color>
     <color name="dark_gray">#4F4F4F</color>

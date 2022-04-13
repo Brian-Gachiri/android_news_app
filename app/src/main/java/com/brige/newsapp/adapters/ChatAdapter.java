@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.R;
@@ -64,7 +65,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             imgChat = itemView.findViewById(R.id.img_chat);
 
             itemView.setOnClickListener(v ->{
-                Snackbar.make(v, "Comming Soon", Snackbar.LENGTH_LONG).show();
+
+                Navigation.findNavController(v).navigate(R.id.chatDetailsFragment);
+//                Snackbar.make(v, "Comming Soon", Snackbar.LENGTH_LONG).show();
             });
         }
     }

@@ -1,64 +1,115 @@
 package com.brige.newsapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.brige.newsapp.adapters.ChatAdapter;
+import com.brige.newsapp.adapters.ChatMessageAdapter;
+import com.brige.newsapp.databinding.FragmentChatDetailsBinding;
+import com.brige.newsapp.databinding.FragmentNotificationsBinding;
+import com.brige.newsapp.networking.ChatServiceGenerator;
+import com.brige.newsapp.networking.pojos.ChatResponse;
+import com.brige.newsapp.utils.PreferenceStorage;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+
 public class ChatDetailsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FragmentChatDetailsBinding binding;
+    private Context context;
+    private SweetAlertDialog pDialog;
+    private List<ChatResponse> chats = new ArrayList<>();
+    private int their_id = 0;
+    private ChatMessageAdapter chatMessageAdapter;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ChatDetailsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatDetailsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChatDetailsFragment newInstance(String param1, String param2) {
-        ChatDetailsFragment fragment = new ChatDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        context = requireActivity();
+
+        if(getArguments() !=null){
+            their_id = getArguments().getInt("PERSON");
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat_details, container, false);
+        binding = FragmentChatDetailsBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setTitle("Loading...");
+
+        chatMessageAdapter = new ChatMessageAdapter(chats,context,their_id);
+        binding.chatMessageRecycler.setLayoutManager(new LinearLayoutManager(context));
+        binding.chatMessageRecycler.setAdapter(chatMessageAdapter);
+        binding.chatMessageRecycler.setNestedScrollingEnabled(true);
+        fetchChats();
+        return root;
+    }
+
+
+
+    public void fetchChats(){
+
+        pDialog.setContentText("Fetching Chats");
+        pDialog.show();
+
+//        Toast.makeText(context, new PreferenceStorage(context).getUserToken(), Toast.LENGTH_SHORT).show();
+
+        Call<List<ChatResponse>> call = ChatServiceGenerator.getInstance()
+                .getApiConnector().getChats(their_id,"Token "+new PreferenceStorage(context).getUserToken());
+
+        call.enqueue(new Callback<List<ChatResponse>>() {
+            @Override
+            public void onResponse(Call<List<ChatResponse>> call, Response<List<ChatResponse>> response) {
+                pDialog.dismiss();
+                if (response.code() == 200 && response.body() != null){
+
+                    Snackbar.make(binding.getRoot(),"Message: "+response.body().size(),
+                            Snackbar.LENGTH_LONG).show();
+                    chats.clear();
+                    chats.addAll(response.body());
+                    chatMessageAdapter.notifyDataSetChanged();
+
+                }
+                else{
+                    Snackbar.make(binding.getRoot(),"You have no chats",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
+                pDialog.dismiss();
+                Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                Log.d("TEST::", "onFailure: "+t.getMessage());
+            }
+        });
     }
 }

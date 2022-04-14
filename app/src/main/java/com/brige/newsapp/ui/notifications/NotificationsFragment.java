@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.brige.newsapp.R;
 import com.brige.newsapp.adapters.ChatAdapter;
+import com.brige.newsapp.adapters.PeopleAdapter;
 import com.brige.newsapp.databinding.FragmentNotificationsBinding;
 import com.brige.newsapp.networking.ChatServiceGenerator;
 import com.brige.newsapp.networking.pojos.ChatResponse;
+import com.brige.newsapp.networking.pojos.PeopleResponse;
 import com.brige.newsapp.networking.pojos.RegisterRequest;
 import com.brige.newsapp.networking.pojos.UserResponse;
 import com.brige.newsapp.utils.PreferenceStorage;
@@ -42,6 +44,8 @@ public class NotificationsFragment extends Fragment {
     private SweetAlertDialog pDialog;
     private ChatAdapter chatAdapter;
     private List<ChatResponse> chats = new ArrayList<>();
+    private List<PeopleResponse> people = new ArrayList<>();
+    private PeopleAdapter peopleAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +62,8 @@ public class NotificationsFragment extends Fragment {
         View root = binding.getRoot();
 
         chatAdapter = new ChatAdapter(chats, context);
-        binding.recyclerMessage.setAdapter(chatAdapter);
+        peopleAdapter = new PeopleAdapter(people, context);
+        binding.recyclerMessage.setAdapter(peopleAdapter);
         binding.recyclerMessage.setLayoutManager(
                 new LinearLayoutManager(context));
         binding.recyclerMessage.setNestedScrollingEnabled(true);
@@ -160,7 +165,7 @@ public class NotificationsFragment extends Fragment {
             binding.textView8.setVisibility(View.GONE);
             binding.recyclerMessage.setVisibility(View.VISIBLE);
 
-            fetchChats();
+            getPeople();
         }
         else{
             binding.btnRegister.setVisibility(View.VISIBLE);
@@ -262,26 +267,25 @@ public class NotificationsFragment extends Fragment {
     }
 
 
-    public void fetchChats(){
 
-        pDialog.setContentText("Fetching Chats");
+    public void getPeople(){
+        pDialog.setContentText("Fetching people");
         pDialog.show();
 
-        Toast.makeText(context, new PreferenceStorage(context).getUserToken(), Toast.LENGTH_SHORT).show();
 
-        Call<List<ChatResponse>> call = ChatServiceGenerator.getInstance()
-                .getApiConnector().getChats(new PreferenceStorage(context).getUserToken());
+        Call<List<PeopleResponse>> call = ChatServiceGenerator.getInstance()
+                .getApiConnector().getPeople(
+                        "Token "+new PreferenceStorage(context).getUserToken()
+                );
 
-        call.enqueue(new Callback<List<ChatResponse>>() {
+        call.enqueue(new Callback<List<PeopleResponse>>() {
             @Override
-            public void onResponse(Call<List<ChatResponse>> call, Response<List<ChatResponse>> response) {
+            public void onResponse(Call<List<PeopleResponse>> call, Response<List<PeopleResponse>> response) {
                 pDialog.dismiss();
-                if (response.code() == 200){
-
-                    chats.clear();
-                    chats.addAll(response.body());
-                    chatAdapter.notifyDataSetChanged();
-
+                if (response.code() == 200 && response.body() != null){
+                    people.clear();
+                    people.addAll(response.body());
+                    peopleAdapter.notifyDataSetChanged();
                 }
                 else{
                     Snackbar.make(binding.getRoot(),"You have no chats",
@@ -290,11 +294,15 @@ public class NotificationsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
+            public void onFailure(Call<List<PeopleResponse>> call, Throwable t) {
                 pDialog.dismiss();
                 Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 Log.d("TEST::", "onFailure: "+t.getMessage());
             }
         });
+
+
     }
+
+
 }

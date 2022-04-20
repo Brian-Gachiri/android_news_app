@@ -18,6 +18,7 @@ import com.brige.newsapp.databinding.FragmentChatDetailsBinding;
 import com.brige.newsapp.databinding.FragmentNotificationsBinding;
 import com.brige.newsapp.networking.ChatServiceGenerator;
 import com.brige.newsapp.networking.pojos.ChatResponse;
+import com.brige.newsapp.networking.pojos.MessageRequest;
 import com.brige.newsapp.utils.PreferenceStorage;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -69,6 +70,25 @@ public class ChatDetailsFragment extends Fragment {
         binding.chatMessageRecycler.setLayoutManager(new LinearLayoutManager(context));
         binding.chatMessageRecycler.setAdapter(chatMessageAdapter);
         binding.chatMessageRecycler.setNestedScrollingEnabled(true);
+
+        binding.fabSend.setOnClickListener(v ->{
+
+            if (binding.inputMessage.getText().toString().trim().isEmpty()){
+                Toast.makeText(context, "Cannot send empty message", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                ChatResponse chatResponse = new ChatResponse();
+                chatResponse.setUserFrom(new PreferenceStorage(context).getUserId());
+                chatResponse.setUserTo(their_id);
+                chatResponse.setUserFromName(new PreferenceStorage(context).getUserName());
+                chatResponse.setMessage(binding.inputMessage.getText().toString().trim());
+                chats.add(chatResponse);
+                chatMessageAdapter.notifyItemInserted(chatMessageAdapter.getItemCount());
+
+                MessageRequest messageRequest = new MessageRequest(their_id, binding.inputMessage.getText().toString().trim());
+                sendMessage(messageRequest);
+            }
+        });
         fetchChats();
         return root;
     }
@@ -97,6 +117,8 @@ public class ChatDetailsFragment extends Fragment {
                     chats.addAll(response.body());
                     chatMessageAdapter.notifyDataSetChanged();
 
+                    binding.inputMessage.setText(" ");
+
                 }
                 else{
                     Snackbar.make(binding.getRoot(),"You have no chats",
@@ -107,6 +129,37 @@ public class ChatDetailsFragment extends Fragment {
             @Override
             public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
                 pDialog.dismiss();
+                Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
+                Log.d("TEST::", "onFailure: "+t.getMessage());
+            }
+        });
+    }
+
+    public void sendMessage(MessageRequest messageRequest){
+
+        Call<List<ChatResponse>> call = ChatServiceGenerator.getInstance()
+                .getApiConnector().sendMessage(messageRequest,"Token "+new PreferenceStorage(context).getUserToken());
+
+
+        call.enqueue(new Callback<List<ChatResponse>>() {
+            @Override
+            public void onResponse(Call<List<ChatResponse>> call, Response<List<ChatResponse>> response) {
+                if (response.code() == 200 && response.body() != null){
+
+
+                    chats.clear();
+                    chats.addAll(response.body());
+                    chatMessageAdapter.notifyDataSetChanged();
+
+                }
+                else{
+                    Snackbar.make(binding.getRoot(),"You have no chats",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
                 Toast.makeText(context, "Please check your internet connection", Toast.LENGTH_SHORT).show();
                 Log.d("TEST::", "onFailure: "+t.getMessage());
             }

@@ -15,6 +15,7 @@ public class PreferenceStorage {
     private final String USER_TOKEN = "com.brige.newsapp.utils.USER_TOKEN";
     private final String USER_NUMBER = "com.brige.newsapp.utils.USER_NUMBER";
     private final String SHARED_PREF_NAME = "com.brige.newsapp.utils.SHARED_PREF_NAME";
+    private final String USER_ID = "com.brige.newsapp.utils.USER_ID";
     private static final String IS_AUTHENTICATED = "com.brige.newsapp.utils.IS_AUTHENTICATED";
 
 
@@ -32,11 +33,19 @@ public class PreferenceStorage {
         editor.putString(USER_EMAIL, userResponse.getEmail());
         editor.putString(USER_NUMBER, userResponse.getPhoneNumber());
         editor.putString(USER_TOKEN, userResponse.getToken());
+        editor.putInt(USER_ID, userResponse.getId());
         editor.apply();
     }
 
     public String getUserToken(){
         return sharedPreferences.getString(USER_TOKEN, " ");
+    }
+    public String getUserName(){
+        return sharedPreferences.getString(USER_NAME, " ");
+    }
+
+    public int getUserId(){
+        return sharedPreferences.getInt(USER_ID, 0);
     }
 
     public boolean isAuthenticated(){

@@ -52,6 +52,12 @@ public class ChatDetailsFragment extends Fragment {
 
         if(getArguments() !=null){
             their_id = getArguments().getInt("PERSON");
+            String name = getArguments().getString("NAME");
+
+            if (((HomeActivity) context).getSupportActionBar() != null){
+                ((HomeActivity) context).getSupportActionBar().setTitle(name);
+            }
+
         }
 
     }
@@ -138,7 +144,8 @@ public class ChatDetailsFragment extends Fragment {
     public void sendMessage(MessageRequest messageRequest){
 
         Call<List<ChatResponse>> call = ChatServiceGenerator.getInstance()
-                .getApiConnector().sendMessage(messageRequest,"Token "+new PreferenceStorage(context).getUserToken());
+                .getApiConnector()
+                .sendMessage(messageRequest,"Token "+new PreferenceStorage(context).getUserToken());
 
 
         call.enqueue(new Callback<List<ChatResponse>>() {
@@ -150,6 +157,9 @@ public class ChatDetailsFragment extends Fragment {
                     chats.clear();
                     chats.addAll(response.body());
                     chatMessageAdapter.notifyDataSetChanged();
+
+                    binding.inputMessage.setText(" ");
+
 
                 }
                 else{

@@ -67,6 +67,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("PERSON", people.get(getAdapterPosition()).getId());
+                bundle.putString("NAME", people.get(getAdapterPosition()).getUsername());
 
                 Navigation.findNavController(v).navigate(R.id.chatDetailsFragment, bundle);
             });

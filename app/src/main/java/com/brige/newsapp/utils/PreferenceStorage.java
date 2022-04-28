@@ -40,6 +40,7 @@ public class PreferenceStorage {
     public String getUserToken(){
         return sharedPreferences.getString(USER_TOKEN, " ");
     }
+
     public String getUserName(){
         return sharedPreferences.getString(USER_NAME, " ");
     }

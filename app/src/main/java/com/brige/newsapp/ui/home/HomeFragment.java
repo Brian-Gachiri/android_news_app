@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -27,6 +29,7 @@ import com.brige.newsapp.networking.ServiceGenerator;
 import com.brige.newsapp.networking.URLs;
 import com.brige.newsapp.networking.pojos.Article;
 import com.brige.newsapp.networking.pojos.Browse;
+import com.brige.newsapp.utils.Notifications;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,8 @@ public class HomeFragment extends Fragment {
     private List<Browse> browserList = new ArrayList<>();
     private List<Article> articles = new ArrayList<>();
     private Box<Discover> discoverBox = ObjectBox.get().boxFor(Discover.class);
+    private Notifications notifications;
+    private NotificationManagerCompat notificationManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +80,21 @@ public class HomeFragment extends Fragment {
         getBrowseData();
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        notifications = new Notifications(getActivity());
+        notifications.createNotificationChannel("Register", "description", Notifications.REGISTER_NOTIFICATION_ID);
+
+        notificationManager = NotificationManagerCompat.from(getActivity());
+        String title = "My notification";
+        String text = "This is my first ever notification";
+        notificationManager.notify(
+                243, notifications.registrationNotification(Notifications.REGISTER_NOTIFICATION_ID,title, text).build());
+
     }
 
     @Override

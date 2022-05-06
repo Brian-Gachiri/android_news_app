@@ -1,6 +1,8 @@
 package com.brige.newsapp.ui.home;
 
 import android.content.ActivityNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Browser;
 import android.util.Log;
@@ -94,6 +96,29 @@ public class HomeFragment extends Fragment {
         String text = "This is my first ever notification";
         notificationManager.notify(
                 243, notifications.registrationNotification(Notifications.REGISTER_NOTIFICATION_ID,title, text).build());
+
+//        notificationManager.notify(
+//                254, notifications.bigTextNotification(
+//                        "Big Test Style",
+//                        getActivity().getResources().getString(R.string.large_text)
+//                ).build()
+//        );
+
+        showImageNotification();
+
+    }
+
+    private void showImageNotification() {
+
+        Bitmap bitmap = BitmapFactory
+                .decodeResource(getActivity().getResources(), R.drawable.background);
+        notificationManager.notify(
+                237,
+                notifications.bigImageNotification(
+                        "Screenshot Captured",
+                        bitmap
+                ).build()
+        );
 
     }
 

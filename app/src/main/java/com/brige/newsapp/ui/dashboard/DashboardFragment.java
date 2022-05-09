@@ -1,5 +1,6 @@
 package com.brige.newsapp.ui.dashboard;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.brige.newsapp.ObjectBox;
+import com.brige.newsapp.R;
 import com.brige.newsapp.adapters.DiscoverAdapter;
 import com.brige.newsapp.databinding.FragmentDashboardBinding;
 import com.brige.newsapp.models.Discover;
@@ -29,6 +32,8 @@ public class DashboardFragment extends Fragment {
     private RecyclerView discoverRecyclerview;
     private List<Discover> discoverList = new ArrayList<>();
     private Box<Discover> discoverBox = ObjectBox.get().boxFor(Discover.class);
+    MediaPlayer mediaplayer;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,8 +56,18 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mediaplayer = MediaPlayer.create(getActivity(), R.raw.song);
+        mediaplayer.start();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mediaplayer.release();
+        mediaplayer = null;
         binding = null;
     }
 }

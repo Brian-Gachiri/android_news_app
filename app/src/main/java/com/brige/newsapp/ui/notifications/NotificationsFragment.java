@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.brige.newsapp.networking.pojos.ChatResponse;
 import com.brige.newsapp.networking.pojos.PeopleResponse;
 import com.brige.newsapp.networking.pojos.RegisterRequest;
 import com.brige.newsapp.networking.pojos.UserResponse;
+import com.brige.newsapp.utils.Notifications;
 import com.brige.newsapp.utils.PreferenceStorage;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -46,6 +48,9 @@ public class NotificationsFragment extends Fragment {
     private List<ChatResponse> chats = new ArrayList<>();
     private List<PeopleResponse> people = new ArrayList<>();
     private PeopleAdapter peopleAdapter;
+    private Notifications notifications;
+    private NotificationManagerCompat notificationManager;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +91,15 @@ public class NotificationsFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        notifications = new Notifications(context);
+        notificationManager = NotificationManagerCompat.from(getActivity());
+
+
+    }
 
     @Override
     public void onDestroyView() {
@@ -198,6 +212,15 @@ public class NotificationsFragment extends Fragment {
                     successDialog.setTitle("Welcome "+ response.body().getUsername());
                     successDialog.setContentText("Registration Successful");
                     successDialog.show();
+
+                    notificationManager.notify(
+                            254, notifications.registrationNotification(
+                                    Notifications.REGISTER_NOTIFICATION_ID,
+                                    "Welcome",
+                                    "Thank you for using NewsApp." +
+                                            "You can share it with your friends and stay up to date togther"
+                            ).build()
+                    );
                 }
                 else if (response.code() == 500){
                     SweetAlertDialog errorDialog =

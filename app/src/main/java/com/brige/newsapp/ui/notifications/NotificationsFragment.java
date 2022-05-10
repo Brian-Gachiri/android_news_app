@@ -16,10 +16,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.brige.newsapp.ObjectBox;
 import com.brige.newsapp.R;
 import com.brige.newsapp.adapters.ChatAdapter;
 import com.brige.newsapp.adapters.PeopleAdapter;
 import com.brige.newsapp.databinding.FragmentNotificationsBinding;
+import com.brige.newsapp.models.People;
 import com.brige.newsapp.networking.ChatServiceGenerator;
 import com.brige.newsapp.networking.pojos.ChatResponse;
 import com.brige.newsapp.networking.pojos.PeopleResponse;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.objectbox.Box;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +53,7 @@ public class NotificationsFragment extends Fragment {
     private PeopleAdapter peopleAdapter;
     private Notifications notifications;
     private NotificationManagerCompat notificationManager;
+    private Box<People> peopleBox = ObjectBox.get().boxFor(People.class);
 
 
     @Override
@@ -179,7 +183,23 @@ public class NotificationsFragment extends Fragment {
             binding.textView8.setVisibility(View.GONE);
             binding.recyclerMessage.setVisibility(View.VISIBLE);
 
-            getPeople();
+            if (peopleBox.isEmpty()){
+                getPeople();
+            }
+            else{
+                people.clear();
+                List<People> boxPeople = peopleBox.getAll();
+                for (int i=0; i< boxPeople.size(); i++){
+                    people.add(
+                            new PeopleResponse(
+                                    boxPeople.get(i).getUser_id(),
+                                    boxPeople.get(i).getUsername(),
+                                    boxPeople.get(i).getEmail()
+                            )
+                    );
+
+                }
+            }
         }
         else{
             binding.btnRegister.setVisibility(View.VISIBLE);
@@ -309,6 +329,15 @@ public class NotificationsFragment extends Fragment {
                     people.clear();
                     people.addAll(response.body());
                     peopleAdapter.notifyDataSetChanged();
+
+                    for(int i=0; i<people.size(); i++){
+                        peopleBox.put(new People(
+                                people.get(i).getUser_id(),
+                                people.get(i).getUsername(),
+                                people.get(i).getEmail()
+                        ));
+                    }
+
                 }
                 else{
                     Snackbar.make(binding.getRoot(),"You have no chats",

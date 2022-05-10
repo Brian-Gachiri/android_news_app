@@ -1,4 +1,4 @@
-package com.brige.newsapp.networking.pojos;
+package com.brige.newsapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,27 +6,31 @@ import com.google.gson.annotations.SerializedName;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
-public class PeopleResponse {
+@Entity
+public class People {
 
-    @SerializedName("id")
-    @Expose
+    @Id
+    long id;
     private Integer user_id;
-    @SerializedName("username")
-    @Expose
     private String username;
-    @SerializedName("email")
-    @Expose
     private String email;
 
-    public PeopleResponse() {
+    public People() {
     }
 
-    public PeopleResponse(Integer user_id, String username, String email) {
+    public People(Integer user_id, String username, String email) {
         this.user_id = user_id;
         this.username = username;
         this.email = email;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Integer getUser_id() {
         return user_id;
@@ -53,3 +57,4 @@ public class PeopleResponse {
     }
 
 }
+

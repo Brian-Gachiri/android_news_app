@@ -1,33 +1,18 @@
-package com.brige.newsapp.networking.pojos;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+package com.brige.newsapp.models;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
-public class ChatResponse {
+@Entity
+public class Chat {
 
-    @SerializedName("id")
-    @Expose
+    @Id long id;
     private Integer user_id;
-    @SerializedName("user_from")
-    @Expose
     private Integer userFrom;
-    @SerializedName("user_from_name")
-    @Expose
     private String userFromName;
-    @SerializedName("user_to")
-    @Expose
     private Integer userTo;
-    @SerializedName("user_to_name")
-    @Expose
     private String userToName;
-    @SerializedName("message")
-    @Expose
     private String message;
-    @SerializedName("date_created")
-    @Expose
     private String dateCreated;
 
     /**
@@ -39,9 +24,16 @@ public class ChatResponse {
     private int status = 0;
 
 
-    public ChatResponse() {
+    public Chat() {
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Integer getUser_id() {
         return user_id;

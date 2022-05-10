@@ -32,7 +32,6 @@ public class DashboardFragment extends Fragment {
     private RecyclerView discoverRecyclerview;
     private List<Discover> discoverList = new ArrayList<>();
     private Box<Discover> discoverBox = ObjectBox.get().boxFor(Discover.class);
-    MediaPlayer mediaplayer;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,15 +58,12 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mediaplayer = MediaPlayer.create(getActivity(), R.raw.song);
-        mediaplayer.start();
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mediaplayer.release();
-        mediaplayer = null;
         binding = null;
     }
 }

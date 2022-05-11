@@ -1,6 +1,7 @@
 package com.brige.newsapp.ui.home;
 
 import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.brige.newsapp.networking.ServiceGenerator;
 import com.brige.newsapp.networking.URLs;
 import com.brige.newsapp.networking.pojos.Article;
 import com.brige.newsapp.networking.pojos.Browse;
+import com.brige.newsapp.utils.MyServices;
 import com.brige.newsapp.utils.Notifications;
 
 import java.util.ArrayList;
@@ -94,8 +96,8 @@ public class HomeFragment extends Fragment {
         notificationManager = NotificationManagerCompat.from(getActivity());
         String title = "My notification";
         String text = "This is my first ever notification";
-        notificationManager.notify(
-                243, notifications.registrationNotification(Notifications.REGISTER_NOTIFICATION_ID,title, text).build());
+//        notificationManager.notify(
+//                243, notifications.registrationNotification(Notifications.REGISTER_NOTIFICATION_ID,title, text).build());
 
 //        notificationManager.notify(
 //                254, notifications.bigTextNotification(
@@ -104,8 +106,10 @@ public class HomeFragment extends Fragment {
 //                ).build()
 //        );
 
-        showImageNotification();
+//        showImageNotification();
 
+        Intent intent = new Intent(getActivity(), MyServices.class);
+        getActivity().startService(intent);
     }
 
     private void showImageNotification() {

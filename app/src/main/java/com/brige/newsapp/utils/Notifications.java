@@ -17,6 +17,7 @@ public class Notifications {
 
     public static final String REGISTER_NOTIFICATION_ID = "com.brige.newsapp.register_notification";
     public static final String LOGIN_NOTIFICATION_ID = "com.brige.newsapp.login_notification";
+    public static final String CHAT_SYNC_NOTIFICATION_ID = "com.brige.newsapp.chat_sync_notification";
     private Context context;
 
     public Notifications(Context context) {
@@ -122,5 +123,46 @@ public class Notifications {
 
         return builder;
 
+    }
+
+    public NotificationCompat.Builder chatSyncNotification(){
+        //This method will be used to build a notification and add the necessary details
+        String title = "Messages";
+        String text = "Checking for messages...";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                context, CHAT_SYNC_NOTIFICATION_ID)
+                .setSmallIcon(R.drawable.ic_explore)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        return builder;
+
+    }
+
+    public void createChatSyncNotificationChannel(String name,String description, String channel_id){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            //This will only apply to Android 8 (API 26) and above
+            //Android 7 and below registers Notifications in a different way
+
+//            CharSequence name = "NewsApp Notifications";
+//            String description = "Registration notification from ngomapp";
+
+            //This variable will let the Android system know how to display the notification
+            //Notifications with higher importance will be able to interrupt the user activity
+            //Those with less importance can be displayed silently.
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(
+                    channel_id, name, importance);
+
+            channel.setDescription(description);
+
+            //Here we register the channel with the system.
+            NotificationManager manager = context.getSystemService(
+                    NotificationManager.class);
+
+            manager.createNotificationChannel(channel);
+        }
     }
 }

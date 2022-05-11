@@ -1,5 +1,6 @@
 package com.brige.newsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -7,6 +8,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.brige.newsapp.utils.MyServices;
+import com.brige.newsapp.utils.Notifications;
 import com.brige.newsapp.utils.PreferenceStorage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -44,6 +47,11 @@ public class HomeActivity extends AppCompatActivity {
                 Navigation.findNavController(this, R.id.nav_host_fragment_activity_home);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        new Notifications(getApplicationContext()).createNotificationChannel("Sync Chats", "Synching chats",
+                Notifications.CHAT_SYNC_NOTIFICATION_ID);
+
+
     }
 
     @Override

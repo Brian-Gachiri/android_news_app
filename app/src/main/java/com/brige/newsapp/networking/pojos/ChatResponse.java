@@ -42,6 +42,16 @@ public class ChatResponse {
     public ChatResponse() {
     }
 
+    public ChatResponse(Integer user_id, Integer userFrom, String userFromName, Integer userTo, String userToName, String message, String dateCreated, int status) {
+        this.user_id = user_id;
+        this.userFrom = userFrom;
+        this.userFromName = userFromName;
+        this.userTo = userTo;
+        this.userToName = userToName;
+        this.message = message;
+        this.dateCreated = dateCreated;
+        this.status = status;
+    }
 
     public Integer getUser_id() {
         return user_id;

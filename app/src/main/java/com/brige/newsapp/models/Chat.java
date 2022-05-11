@@ -27,6 +27,16 @@ public class Chat {
     public Chat() {
     }
 
+    public Chat(Integer user_id, Integer userFrom, String userFromName, Integer userTo, String userToName, String message, String dateCreated) {
+        this.user_id = user_id;
+        this.userFrom = userFrom;
+        this.userFromName = userFromName;
+        this.userTo = userTo;
+        this.userToName = userToName;
+        this.message = message;
+        this.dateCreated = dateCreated;
+    }
+
     public long getId() {
         return id;
     }

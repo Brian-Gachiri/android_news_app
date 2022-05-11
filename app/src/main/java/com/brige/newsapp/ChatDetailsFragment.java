@@ -16,6 +16,8 @@ import com.brige.newsapp.adapters.ChatAdapter;
 import com.brige.newsapp.adapters.ChatMessageAdapter;
 import com.brige.newsapp.databinding.FragmentChatDetailsBinding;
 import com.brige.newsapp.databinding.FragmentNotificationsBinding;
+import com.brige.newsapp.models.Chat;
+import com.brige.newsapp.models.Chat_;
 import com.brige.newsapp.networking.ChatServiceGenerator;
 import com.brige.newsapp.networking.pojos.ChatResponse;
 import com.brige.newsapp.networking.pojos.MessageRequest;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.objectbox.Box;
+import io.objectbox.query.Query;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +43,7 @@ public class ChatDetailsFragment extends Fragment {
     private List<ChatResponse> chats = new ArrayList<>();
     private int their_id = 0;
     private ChatMessageAdapter chatMessageAdapter;
+    private Box<Chat> chatBox = ObjectBox.get().boxFor(Chat.class);
 
 
     public ChatDetailsFragment() {
@@ -95,8 +100,37 @@ public class ChatDetailsFragment extends Fragment {
                 sendMessage(messageRequest);
             }
         });
-        fetchChats();
+//        fetchChats();
+        getChatsFromObjectBox();
         return root;
+    }
+
+    public void getChatsFromObjectBox(){
+
+        Query<Chat> query = chatBox.query(
+                Chat_.userFrom.equal(their_id)
+                        .or(Chat_.userTo.equal(their_id)))
+                .order(Chat_.dateCreated).build();
+
+        List<Chat> boxChats = query.find();
+
+        chats.clear();
+        for(int i=0; i<boxChats.size();i++){
+            chats.add(
+                    new ChatResponse(
+                            boxChats.get(i).getUser_id(),
+                            boxChats.get(i).getUserFrom(),
+                            boxChats.get(i).getUserFromName(),
+                            boxChats.get(i).getUserTo(),
+                            boxChats.get(i).getUserToName(),
+                            boxChats.get(i).getMessage(),
+                            boxChats.get(i).getDateCreated(),
+                            boxChats.get(i).getStatus()
+                    )
+            );
+        }
+        chatMessageAdapter.notifyDataSetChanged();
+
     }
 
 

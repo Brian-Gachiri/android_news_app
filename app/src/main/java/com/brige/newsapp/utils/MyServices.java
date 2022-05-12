@@ -98,12 +98,12 @@ public class MyServices extends Service {
                 }
 
                 stopSelf();
-                notificationManager.cancel(CHAT_SYNC_NOTIFICATION_ID);
+//                notificationManager.cancel(CHAT_SYNC_NOTIFICATION_ID);
             }
             @Override
             public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
                 Log.d("SERVICE::", "onFailure: "+t.getMessage());
-                notificationManager.cancel(CHAT_SYNC_NOTIFICATION_ID);
+//                notificationManager.cancel(CHAT_SYNC_NOTIFICATION_ID);
                 stopSelf();
             }
         });
